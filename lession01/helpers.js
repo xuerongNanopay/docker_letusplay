@@ -1,5 +1,5 @@
 const connectToDatabase = () => {
-  return dummyPromist = new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve()
     }, 1000)
