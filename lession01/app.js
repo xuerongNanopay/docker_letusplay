@@ -5,7 +5,7 @@ import connectToDatabase from './helpers.js'
 const app = express()
 
 app.get('/', (req, res) => {
-  res.send('<h1>Docker Lesson01</h1>')
+  res.send('<h1>Docker Lesson 01</h1>')
 })
 
 await connectToDatabase()
