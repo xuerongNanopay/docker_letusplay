@@ -1,0 +1,11 @@
+import express from 'express'
+
+// import connectToDatabase from './helper'
+
+const app = express()
+
+app.get('/', (req, res) => {
+  res.send('<h1>Docker Lesson01</h1>')
+})
+
+app.listen(3000)
