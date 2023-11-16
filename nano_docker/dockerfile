@@ -22,7 +22,7 @@ ARG JDK_SHA_256=7c1f7689db0f4b48ee6978029c4a1aecd1442a8a7637cdf43a5471d0c79712a8
 
 
 ARG JDK_NAME=jdk_${JDK_VERSION}
-RUN curl -o ~/Downloads/${JDK_NAME}.tar.gz ${JDK_URL}
+RUN curl -L -o ~/Downloads/${JDK_NAME}.tar.gz ${JDK_URL}
 # escape=`
 RUN echo "${JDK_SHA_256} ${HOME}/Downloads/${JDK_NAME}.tar.gz" | sha256sum -c
 RUN mkdir -p ~/Application/${JDK_NAME}
@@ -36,7 +36,7 @@ ARG NODE_URL=https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-
 ARG NODE_SHA_256=f0919f092fbf74544438907fa083c21e76b2d7a4bc287f0607ada1553ef16f60
 
 ARG NODE_NAME=node_${NODE_VERSION}
-RUN curl -o ~/Downloads/${NODE_NAME}.tar.gz ${NODE_URL}
+RUN curl -L -o ~/Downloads/${NODE_NAME}.tar.gz ${NODE_URL}
 RUN echo "${NODE_SHA_256} ${HOME}/Downloads/${NODE_NAME}.tar.gz" | sha256sum -c
 RUN mkdir -p ~/Application/${NODE_NAME}
 RUN tar -zxf ~/Downloads/${NODE_NAME}.tar.gz -C ~/Application/${NODE_NAME} --strip-components=1
@@ -49,7 +49,7 @@ ARG GRADLE_URL=https://services.gradle.org/distributions/gradle-${GRADLE_VERSION
 ARG GRADLE_SHA_256=f2b9ed0faf8472cbe469255ae6c86eddb77076c75191741b4a462f33128dd419
 
 ARG GRADLE_NAME=gradle-${GRADLE_VERSION}
-RUN curl --location -o ~/Downloads/${GRADLE_NAME}.zip ${GRADLE_URL}
+RUN curl -L -o ~/Downloads/${GRADLE_NAME}.zip ${GRADLE_URL}
 RUN echo "${GRADLE_SHA_256} ${HOME}/Downloads/${GRADLE_NAME}.zip" | sha256sum -c
 RUN mkdir -p ~/Application/${GRADLE_NAME}
 RUN rm -rf ~/Downloads/.tmp/ \
@@ -63,15 +63,45 @@ RUN echo "export PATH=\$GRADLE_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
 # Maven Install
 ARG MAVEN_VERSION=3.9.5
 ARG MAVEN_URL=https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
+ARG MAVEN_SHA_512=4810523ba025104106567d8a15a8aa19db35068c8c8be19e30b219a1d7e83bcab96124bf86dc424b1cd3c5edba25d69ec0b31751c136f88975d15406cab3842b
 
 ARG MAVEN_NAME=maven_${MAVEN_VERSION}
-ARG MAVEN_SHA_512=4810523ba025104106567d8a15a8aa19db35068c8c8be19e30b219a1d7e83bcab96124bf86dc424b1cd3c5edba25d69ec0b31751c136f88975d15406cab3842b
-RUN curl -o ~/Downloads/${MAVEN_NAME}.tar.gz ${MAVEN_URL}
+RUN curl -L -o ~/Downloads/${MAVEN_NAME}.tar.gz ${MAVEN_URL}
 RUN echo "${MAVEN_SHA_512} ${HOME}/Downloads/${MAVEN_NAME}.tar.gz" | sha512sum -c
 RUN mkdir -p ~/Application/${MAVEN_NAME}
 RUN tar -zxf ~/Downloads/${MAVEN_NAME}.tar.gz -C ~/Application/${MAVEN_NAME} --strip-components=1
-RUN echo "export NODE_HOME=\$HOME/Application/${MAVEN_NAME}" >> ~/.application.sh
-RUN echo "export PATH=\$NODE_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
+RUN echo "export MAVEN_HOME=\$HOME/Application/${MAVEN_NAME}" >> ~/.application.sh
+RUN echo "export PATH=\$MAVEN_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
+
+# Rust Install
+# TODO verify gpg
+ARG RUST_VERSION=1.73.0
+ARG RUST_URL=https://static.rust-lang.org/dist/rust-${RUST_VERSION}-x86_64-unknown-linux-gnu.tar.gz
+
+ARG RUST_NAME=rust_${RUST_VERSION}
+RUN curl -L -o ~/Downloads/${RUST_NAME}.tar.gz ${RUST_URL}
+RUN mkdir -p ~/Application/${RUST_NAME}
+RUN tar -zxf ~/Downloads/${RUST_NAME}.tar.gz -C ~/Application/${RUST_NAME} --strip-components=1
+RUN echo "export RUST_HOME=\$HOME/Application/${RUST_NAME}" >> ~/.application.sh
+RUN echo "export RUSTC_HOME=\${RUST_HOME}/rustc" >> ~/.application.sh
+RUN echo "export CARGO_HOME=\${RUST_HOME}/cargo" >> ~/.application.sh
+RUN echo "export RUSTFMT_HOME=\${RUST_HOME}/rustfmt-preview" >> ~/.application.sh
+RUN echo "export PATH=\$RUSTC_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
+RUN echo "export PATH=\$CARGO_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
+RUN echo "export PATH=\$RUSTFMT_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
+
+# Golang Install
+ARG GO_VERSION=1.21.4
+ARG GO_URL=https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz
+ARG GO_SHA_256=73cac0215254d0c7d1241fa40837851f3b9a8a742d0b54714cbdfb3feaf8f0af
+
+ARG GO_NAME=go_${GO_VERSION}
+RUN curl -L -o ~/Downloads/${GO_NAME}.tar.gz ${GO_URL}
+RUN echo "${GO_SHA_256} ${HOME}/Downloads/${GO_NAME}.tar.gz" | sha256sum -c
+RUN mkdir -p ~/Application/${GO_NAME}
+RUN tar -zxf ~/Downloads/${GO_NAME}.tar.gz -C ~/Application/${GO_NAME} --strip-components=1
+RUN echo "export GO_HOME=\$HOME/Application/${GO_NAME}" >> ~/.application.sh
+RUN echo "export PATH=\$GO_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
 
 USER root
 RUN service ssh start
