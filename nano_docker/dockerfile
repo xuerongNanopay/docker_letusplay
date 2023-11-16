@@ -20,10 +20,10 @@ ARG JDK_VERSION=jdk-21
 ARG JDK_HASH=7c1f7689db0f4b48ee6978029c4a1aecd1442a8a7637cdf43a5471d0c79712a8
 ARG JDK_URL=https://download.oracle.com/java/21/latest/${JDK_VERSION}_linux-x64_bin.tar.gz
 RUN curl -o ~/Downloads/${JDK_VERSION}.tar.gz ${JDK_URL}
-# RUN echo "${JDK_HASH} ~/Downloads/${JDK_VERSION}.tar.gz" | sha256sum -c
+# escape=`
+RUN echo "${JDK_HASH} ${HOME}/Downloads/${JDK_VERSION}.tar.gz" | sha256sum -c
 RUN mkdir -p ~/Application/${JDK_VERSION}
 RUN tar -zxf ~/Downloads/${JDK_VERSION}.tar.gz -C ~/Application/${JDK_VERSION} --strip-components=1
-# escape=`
 RUN echo "export JAVA_HOME=\$HOME/Application/${JDK_VERSION}" >> ~/.application.sh
 RUN echo "export PATH=\$JAVA_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
 
