@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 ARG USER=ubuntu
 ARG PASSWD=adminAb1
-RUN apt update && apt install  openssh-server sudo curl vim git zsh -y
+RUN apt update && apt install  openssh-server sudo curl vim git zsh unzip -y
 RUN useradd -rm -d /home/${USER} -s /usr/bin/zsh -g root -G sudo -u 1000 ${USER}
 RUN echo "${USER}:${PASSWD}" | chpasswd
 
@@ -28,11 +28,25 @@ RUN echo "export PATH=\$JAVA_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
 # Node Install
 ARG NODE_VERSION=v21.2.0
 ARG NODE_URL=https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.gz
-RUN curl -o ~/Downloads/${NODE_VERSION}.tar.gz ${NODE_URL}
-RUN mkdir -p ~/Application/${NODE_VERSION}
-RUN tar -zxf ~/Downloads/${NODE_VERSION}.tar.gz -C ~/Application/${NODE_VERSION} --strip-components=1
-RUN echo "export NODE_HOME=\$HOME/Application/${NODE_VERSION}" >> ~/.application.sh
+ARG NODE_FOLDER=node_${NODE_VERSION}
+RUN curl -o ~/Downloads/${NODE_FOLDER}.tar.gz ${NODE_URL}
+RUN mkdir -p ~/Application/${NODE_FOLDER}
+RUN tar -zxf ~/Downloads/${NODE_FOLDER}.tar.gz -C ~/Application/${NODE_FOLDER} --strip-components=1
+RUN echo "export NODE_HOME=\$HOME/Application/${NODE_FOLDER}" >> ~/.application.sh
 RUN echo "export PATH=\$NODE_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
+
+# Gradle Install
+# TODO: find way to --strip-components=1 for unzip
+ARG GRADLE_VERSION=8.4
+ARG GRADLE_URL=https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip
+ARG GRADLE_FOLDER=gradle-${GRADLE_VERSION}
+ARG GRADLE_DIR=~/Application/${GRADLE_FOLDER}
+RUN curl --location -o ~/Downloads/${GRADLE_FOLDER}.zip ${GRADLE_URL}
+RUN mkdir -p ~/Application/${GRADLE_FOLDER}
+RUN unzip -qq -d ~/Application/ ~/Downloads/${GRADLE_FOLDER}.zip
+# RUN unzip -qq -d ~/Application/ ~/Downloads/${GRADLE_FOLDER}.zip && f=(~/Application//*) && mv ${GRADLE_DIR}/*/* ${GRADLE_DIR} && rmdir \${f[@]}
+RUN echo "export GRADLE_HOME=\$HOME/Application/${GRADLE_FOLDER}" >> ~/.application.sh
+RUN echo "export PATH=\$GRADLE_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
 
 USER root
 RUN service ssh start
