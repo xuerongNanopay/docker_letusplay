@@ -13,6 +13,7 @@ RUN mkdir ~/Downloads
 RUN touch ~/.application.sh
 RUN echo "source ~/.application.sh" >> ~/.zshrc
 
+# JAVA Install
 ARG JDK_VERSION=jdk-21
 ARG JDK_HASH=7c1f7689db0f4b48ee6978029c4a1aecd1442a8a7637cdf43a5471d0c79712a8
 ARG JDK_URL=https://download.oracle.com/java/21/latest/${JDK_VERSION}_linux-x64_bin.tar.gz
@@ -23,6 +24,15 @@ RUN tar -zxf ~/Downloads/${JDK_VERSION}.tar.gz -C ~/Application/${JDK_VERSION} -
 # escape=`
 RUN echo "export JAVA_HOME=\$HOME/Application/${JDK_VERSION}" >> ~/.application.sh
 RUN echo "export PATH=\$JAVA_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
+
+# Node Install
+ARG NODE_VERSION=v21.2.0
+ARG NODE_URL=https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.gz
+RUN curl -o ~/Downloads/${NODE_VERSION}.tar.gz ${NODE_URL}
+RUN mkdir -p ~/Application/${NODE_VERSION}
+RUN tar -zxf ~/Downloads/${NODE_VERSION}.tar.gz -C ~/Application/${NODE_VERSION} --strip-components=1
+RUN echo "export NODE_HOME=\$HOME/Application/${NODE_VERSION}" >> ~/.application.sh
+RUN echo "export PATH=\$NODE_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
 
 USER root
 RUN service ssh start
