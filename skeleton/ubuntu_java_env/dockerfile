@@ -1,0 +1,61 @@
+FROM ubuntu:22.04
+
+ARG USER=ubuntu
+ARG PASSWD=adminAb1
+RUN apt update && apt install  openssh-server sudo curl vim git zsh unzip -y
+RUN useradd -rm -d /home/${USER} -s /usr/bin/zsh -g root -G sudo -u 1000 ${USER}
+RUN echo "${USER}:${PASSWD}" | chpasswd
+# Nano use
+# RUN chmod 777 /opt/
+
+USER ubuntu
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+RUN mkdir ~/Application
+RUN mkdir ~/Downloads
+RUN touch ~/.application.sh
+RUN echo "source ~/.application.sh" >> ~/.zshrc
+
+# JAVA Install
+ARG JDK_VERSION=jdk-21
+ARG JDK_HASH=7c1f7689db0f4b48ee6978029c4a1aecd1442a8a7637cdf43a5471d0c79712a8
+ARG JDK_URL=https://download.oracle.com/java/21/latest/${JDK_VERSION}_linux-x64_bin.tar.gz
+RUN curl -o ~/Downloads/${JDK_VERSION}.tar.gz ${JDK_URL}
+# escape=`
+RUN echo "${JDK_HASH} ${HOME}/Downloads/${JDK_VERSION}.tar.gz" | sha256sum -c
+RUN mkdir -p ~/Application/${JDK_VERSION}
+RUN tar -zxf ~/Downloads/${JDK_VERSION}.tar.gz -C ~/Application/${JDK_VERSION} --strip-components=1
+RUN echo "export JAVA_HOME=\$HOME/Application/${JDK_VERSION}" >> ~/.application.sh
+RUN echo "export PATH=\$JAVA_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
+
+# Node Install
+ARG NODE_VERSION=v21.2.0
+ARG NODE_URL=https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.gz
+ARG NODE_FOLDER=node_${NODE_VERSION}
+RUN curl -o ~/Downloads/${NODE_FOLDER}.tar.gz ${NODE_URL}
+RUN mkdir -p ~/Application/${NODE_FOLDER}
+RUN tar -zxf ~/Downloads/${NODE_FOLDER}.tar.gz -C ~/Application/${NODE_FOLDER} --strip-components=1
+RUN echo "export NODE_HOME=\$HOME/Application/${NODE_FOLDER}" >> ~/.application.sh
+RUN echo "export PATH=\$NODE_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
+
+# Gradle Install
+ARG GRADLE_VERSION=8.4
+ARG GRADLE_URL=https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip
+ARG GRADLE_NAME=gradle-${GRADLE_VERSION}
+RUN curl --location -o ~/Downloads/${GRADLE_NAME}.zip ${GRADLE_URL}
+RUN mkdir -p ~/Application/${GRADLE_NAME}
+RUN rm -rf ~/Downloads/.tmp/ \
+    && mkdir ~/Downloads/.tmp/ \
+    && unzip -qq -d ~/Downloads/.tmp/ ~/Downloads/gradle-${GRADLE_VERSION}.zip \
+    && mv ~/Downloads/.tmp/*/* ~/Application/${GRADLE_NAME} \
+    && rm -rf ~/Download/.tmp/
+RUN echo "export GRADLE_HOME=\$HOME/Application/${GRADLE_NAME}" >> ~/.application.sh
+RUN echo "export PATH=\$GRADLE_HOME/bin\${PATH:+:\${PATH}}" >> ~/.application.sh
+
+USER root
+RUN service ssh start
+EXPOSE 22
+CMD ["/usr/sbin/sshd","-D"]
+
+# docker build -t xrw/ubuntu:me .
+# docker run -p 4022:22 -d --name ubuntu xrw/ubuntu:me
+# ssh admin@localhost -p 4022
