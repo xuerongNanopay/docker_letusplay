@@ -1,0 +1,15 @@
+FROM ubuntu:22.04
+
+RUN apt update && apt install  openssh-server sudo curl vim git zsh -y
+RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1000 ubuntu 
+RUN echo 'ubuntu:adminAb1' | chpasswd
+RUN service ssh start
+
+ENV PORT 22
+
+EXPOSE $PORT
+
+# This volumn will be create as root user.
+# VOLUME ["/home/ubuntu/app"]
+
+CMD ["/usr/sbin/sshd","-D"]
