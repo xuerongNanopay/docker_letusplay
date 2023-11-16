@@ -56,5 +56,6 @@ RUN service ssh start
 EXPOSE 22
 CMD ["/usr/sbin/sshd","-D"]
 
+# docker build -t xrw/ubuntu:me .
+# docker run -p 4022:22 -d --name ubuntu xrw/ubuntu:me
 # ssh admin@localhost -p 4022
-# TODO: find why to install oh-my-zsh
