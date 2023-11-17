@@ -3,7 +3,17 @@ resource "aws_vpc" "xrw_ue1_vpc" {
   # enable_dns_hostnames = true
 
   tags = {
-    Name = "xrw_ue1"
+    Name = "xrw_ue1_vpc"
+  }
+}
+
+resource "aws_default_route_table" "xrw_ue1_vpc_default_rtab" {
+  default_route_table_id = aws_vpc.xrw_ue1_vpc.default_route_table_id
+  route {
+    cidr_block = "10.0.0.0/16"
+  }
+  tags = {
+    Name = "xrw_ue1_vpc_default_rtab"
   }
 }
 
@@ -15,7 +25,7 @@ resource "aws_subnet" "xrw_ue1a_private_snet" {
   availability_zone = "us-east-1a"
 
   tags = {
-    Name = "xrw_ue1a_private"
+    Name = "xrw_ue1a_private_snet"
   }
   
 }
@@ -25,7 +35,7 @@ resource "aws_subnet" "xrw_ue1b_private_snet" {
   # map_public_ip_on_launch = true
   availability_zone = "us-east-1b"
   tags = {
-    Name = "xrw_ue1b_private"
+    Name = "xrw_ue1b_private_snet"
   }
 }
 resource "aws_subnet" "xrw_ue1c_private_snet" {
@@ -34,7 +44,7 @@ resource "aws_subnet" "xrw_ue1c_private_snet" {
   # map_public_ip_on_launch = true
   availability_zone = "us-east-1c"
   tags = {
-    Name = "xrw_ue1c_private"
+    Name = "xrw_ue1c_private_snet"
   }
 }
 resource "aws_subnet" "xrw_ue1d_private_snet" {
@@ -43,7 +53,7 @@ resource "aws_subnet" "xrw_ue1d_private_snet" {
   # map_public_ip_on_launch = true
   availability_zone = "us-east-1d"
   tags = {
-    Name = "xrw_ue1d_private"
+    Name = "xrw_ue1d_private_snet"
   }
 }
 
@@ -53,7 +63,7 @@ resource "aws_subnet" "xrw_ue1e_public_snet" {
   cidr_block = "10.0.64.0/20"
   availability_zone = "us-east-1e"
   tags = {
-    Name = "xrw_ue1e_public"
+    Name = "xrw_ue1e_public_snet"
   }
 }
 resource "aws_subnet" "xrw_ue1f_public_snet" {
@@ -61,6 +71,6 @@ resource "aws_subnet" "xrw_ue1f_public_snet" {
   cidr_block = "10.0.80.0/20"
   availability_zone = "us-east-1f"
   tags = {
-    Name = "xrw_ue1f_public"
+    Name = "xrw_ue1f_public_snet"
   }
 }
