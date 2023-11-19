@@ -1,6 +1,6 @@
 resource "aws_vpc" "xrw_ue1_vpc" {
   cidr_block = "10.0.0.0/16"
-  # enable_dns_hostnames = true
+  enable_dns_hostnames = true
 
   tags = {
     Name = "xrw_ue1_vpc"

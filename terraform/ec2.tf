@@ -13,4 +13,14 @@ resource "aws_instance" "nbp" {
   root_block_device {
     volume_size = 10
   }
+
+  provisioner "local-exec" {
+    command = templatefile("linux-ssh-config.tpl", {
+      hostname = "nbp-staging"
+      ip = self.public_ip,
+      user = "ubuntu",
+      identityfile = "~/.ssh/xrw_ec2"
+    })
+    interpreter = [ "bash", "-c" ]
+  }
 }
