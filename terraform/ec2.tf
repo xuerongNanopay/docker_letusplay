@@ -15,7 +15,7 @@ resource "aws_instance" "nbp" {
   }
 
   provisioner "local-exec" {
-    command = templatefile("linux-ssh-config.tpl", {
+    command = templatefile("${var.host_os}-ssh-config.tpl", {
       hostname = "nbp-staging"
       ip = self.public_ip,
       user = "ubuntu",
@@ -23,4 +23,12 @@ resource "aws_instance" "nbp" {
     })
     interpreter = [ "bash", "-c" ]
   }
+}
+
+output "nbp-staging_ip" {
+  value = aws_instance.nbp.public_ip
+}
+
+output "nbp-staging_dns" {
+  value = aws_instance.nbp.public_dns
 }
