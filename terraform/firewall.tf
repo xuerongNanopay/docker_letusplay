@@ -1,4 +1,4 @@
-resource "aws_security_group" "xrw_sg" {
+resource "aws_security_group" "from_xrw_home" {
   name        = "xrw_sg"
   description = "xrw security grourp"
   vpc_id      = aws_vpc.xrw_ue1_vpc.id
@@ -8,6 +8,7 @@ resource "aws_security_group" "xrw_sg" {
     from_port        = 0
     to_port          = 0
     protocol         = "-1"
+    # cidr_blocks      = ["0.0.0.0/0"]
     cidr_blocks      = ["67.70.122.14/32"]
   }
 
@@ -19,13 +20,12 @@ resource "aws_security_group" "xrw_sg" {
   }
 }
 
-resource "aws_security_group" "private_sg" {
+resource "aws_security_group" "private_all" {
   name        = "private_sg"
   description = "from xrw_sg"
   vpc_id      = aws_vpc.xrw_ue1_vpc.id
 
   ingress {
-    description      = "from xrw home only"
     from_port        = 0
     to_port          = 0
     protocol         = "-1"

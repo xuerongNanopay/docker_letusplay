@@ -122,7 +122,7 @@ resource "aws_route" "nat_route" {
 }
 resource "aws_nat_gateway" "public_nat" {
   allocation_id = aws_eip.eip.id
-  subnet_id = aws_subnet.xrw_ue1a_private_snet.id
+  subnet_id = aws_subnet.xrw_ue1c_public_snet.id
   connectivity_type = "public"
 }
 
