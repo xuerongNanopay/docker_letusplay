@@ -113,3 +113,23 @@ resource "aws_route_table_association" "xrw_ue1f_rtab" {
   subnet_id      = aws_subnet.xrw_ue1f_public_snet.id
   route_table_id = aws_route_table.xrw_ue1_vpc_public_rtab.id
 }
+
+resource "aws_route" "nat_route" {
+  route_table_id = aws_default_route_table.xrw_ue1_vpc_default_rtab.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id = aws_nat_gateway.public_nat.id
+  depends_on = [ aws_default_route_table.xrw_ue1_vpc_default_rtab ]
+}
+resource "aws_nat_gateway" "public_nat" {
+  allocation_id = aws_eip.eip.id
+  subnet_id = aws_subnet.xrw_ue1a_private_snet.id
+  connectivity_type = "public"
+}
+
+resource "aws_eip" "eip" {
+  domain = "vpc"
+}
+
+output "nat_gateway_ip" {
+  value = aws_eip.eip.public_ip
+}
