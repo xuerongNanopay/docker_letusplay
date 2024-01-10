@@ -27,4 +27,10 @@ spec:
     spec:
       containers:
         - name: story
-          image: xuerong/kub-data-demo
+          image: xuerong/kub-data-demo:1
+          volumeMounts:
+            - mountPath: /app/story
+              name: story-volume
+      volumes:
+        - name: story-volume
+          emptyDir: {}
