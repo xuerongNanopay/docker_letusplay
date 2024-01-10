@@ -17,3 +17,9 @@ spec:
       containers:
         - name: second-node
           image: xuerong/kub-first-app
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            periodSeconds: 3
+            initialDelaySeconds: 5
