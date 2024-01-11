@@ -28,6 +28,9 @@ spec:
       containers:
         - name: story
           image: xuerong/kub-data-demo:1
+          env:
+            - name: STROY_FOLDER
+              value: 'story'
           volumeMounts:
             - mountPath: /app/story
               name: story-volume
