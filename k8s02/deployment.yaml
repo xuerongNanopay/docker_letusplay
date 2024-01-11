@@ -33,4 +33,7 @@ spec:
               name: story-volume
       volumes:
         - name: story-volume
-          emptyDir: {}
+          # emptyDir: {} #instance per pod
+          # hostPath:      #instance per work node
+          #   path: /data
+          #   type: DirectoryOrCreate
