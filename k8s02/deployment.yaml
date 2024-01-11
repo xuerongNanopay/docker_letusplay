@@ -16,7 +16,7 @@ kind: Deployment
 metadata:
   name: story-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: story
@@ -37,3 +37,5 @@ spec:
           # hostPath:      #instance per work node
           #   path: /data
           #   type: DirectoryOrCreate
+          persistentVolumeClaim:
+            claimName: host-pvc
