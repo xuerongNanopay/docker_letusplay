@@ -11,6 +11,13 @@ const app = express();
 
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Orgin', '*')
+  res.setHeader('Access-Control-Allow-Methods', '*')
+  res.setHeader('Access-Control-Allow-Headers')
+  next()
+})
+
 const extractAndVerifyToken = async (headers) => {
   if (!headers.authorization) {
     throw new Error('No token provided.');
