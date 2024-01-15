@@ -14,4 +14,9 @@ spec:
     spec:
       containers:
         - name: users
-          image: xuerong/kub-demo-users
+          image: xuerong/kub-demo-users:latest
+          env:
+            - name: AUTH_ADDRESS
+              value: localhost  #Investigating: If I have one more container running in same pod, with same url
+        - name: auth
+          image: xuerong/kub-demo-auth:latest
