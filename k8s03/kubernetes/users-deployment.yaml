@@ -16,6 +16,6 @@ spec:
         - name: users
           image: xuerong/kub-demo-users:latest
           env:
-            - key: AUTH_ADDRESS
+            - name: AUTH_ADDRESS
               value: "auth-service.default" #coreDNS: servicename.namespace
               
